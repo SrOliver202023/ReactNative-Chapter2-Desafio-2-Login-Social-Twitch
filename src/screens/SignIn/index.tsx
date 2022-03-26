@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
-import { Fontisto } from '@expo/vector-icons'
+import { Fontisto } from '@expo/vector-icons';
 import { ActivityIndicator, Alert, Modal, View } from 'react-native';
 
 import { useAuth } from '../../hooks/useAuth';
@@ -8,26 +8,34 @@ import { useAuth } from '../../hooks/useAuth';
 import LoginBannerImg from '../../assets/images/login.svg';
 import LogoImg from '../../assets/images/logo.svg';
 
-import { 
+import {
   Container,
   Content,
-  LoginBanner, 
-  LoginInfo, 
-  Header, 
-  Partner, 
-  Description, 
+  LoginBanner,
+  LoginInfo,
+  Header,
+  Partner,
+  Description,
   SignInButton,
   SignInButtonIcon,
-  SignInButtonText 
+  SignInButtonText
 } from './styles';
 
 export function SignIn() {
   const { signIn, isLoggingIn } = useAuth();
+
   const theme = useTheme();
 
   // creates a function to handle sign in
-    // try to call and wait signIn
-    // if fails, display an Alert with the title "Erro SignIn" and message "Ocorreu um erro ao tentar logar no app"
+  async function handleSignIn() {
+    try {
+      await signIn();
+    } catch (error) {
+      Alert.alert('Erro SignIn', 'Ocorreu um erro ao tentar logar no app.');
+    }
+  }
+  // try to call and wait signIn
+  // if fails, display an Alert with the title "Erro SignIn" and message "Ocorreu um erro ao tentar logar no app"
 
   return (
     <Container
@@ -61,23 +69,40 @@ export function SignIn() {
             o mundo da Twitch
           </Description>
 
-          {/* <SignInButton onPress={}>
+          <SignInButton onPress={handleSignIn}>
             <SignInButtonIcon>
-              Verify if isLoggingIn is true
+              {isLoggingIn ? (
+                <ActivityIndicator
+                  size={20}
+                  color={theme.colors.white}
+                />
+              ) : (
+                <Fontisto
+                  name="twitch"
+                  size={20}
+                  color={theme.colors.white}
+                  style={{
+                    marginRight: 1
+                  }}
+                />
+              )}
+              {/* Verify if isLoggingIn is true
               If it is, show an ActivityIndicator
-              Otherwise, show Fontisto's twitch icon
+              Otherwise, show Fontisto's twitch icon */}
             </SignInButtonIcon>
 
             <SignInButtonText>
-              Verify if isLoggingIn is true
+              {isLoggingIn ? "Entrando..." : "Entrar com a Twitch"}
+
+              {/* Verify if isLoggingIn is true
               If it is, show "Entrando..."
-              Otherwise, show "Entrar com Twitch"
+              Otherwise, show "Entrar com Twitch" */}
             </SignInButtonText>
-          </SignInButton> */}
+          </SignInButton>
         </LoginInfo>
       </Content>
 
-      <Modal 
+      <Modal
         animationType="fade"
         visible={isLoggingIn}
         statusBarTranslucent
